@@ -47,7 +47,7 @@ class MySeleniumTests(StaticLiveServerTestCase):
         # Definició de preguntes per inserir
         matrix = {
             "What's ya name?": ["Joan", "Ariadna"], 
-            "What's ya pet's name?": ["Fify", "Kitty"]
+            "What's ya pet's name?": ["Fiffy", "Kitty"]
             }
         
         # introduïm dades per pregunta
@@ -86,17 +86,16 @@ class MySeleniumTests(StaticLiveServerTestCase):
             self.assertEqual( self.selenium.title , "Select question to change | Django site admin" )
             
         # Comprobación de la inserción correcta
-        # Wieder in For Schleife
         for question in matrix:
-            self.selenium.find_element(By.LINK_TEXT, question).click()
+            q_valid =  self.selenium.find_element(By.LINK_TEXT, question)
+            if q_valid:
+                print("Pregunta: ", question)
+                self.selenium.find_element(By.LINK_TEXT, question).click()
 
             # Búsqueda de las opciones
             for option in matrix[question]:
                 if self.selenium.find_element(By.XPATH, f'//input[@value="{option}"]'):
-                    print(f"Opción {option} correcta")
+                    print(f"\t✓ Opción {option} insertada correctamente")
 
-                # By.LINK_TEXT matrix[erste Fragen] .click()
-                # find_element input[@value=matrix[question]] 
-            
             # Volver a la lista de las preguntas
             self.selenium.get('%s%s' % (self.live_server_url, '/admin/polls/question/'))
