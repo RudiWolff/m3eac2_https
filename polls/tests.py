@@ -23,8 +23,7 @@ class MySeleniumTests(StaticLiveServerTestCase):
     def tearDownClass(cls):
         # tanquem browser
         # comentar la propera línia si volem veure el resultat de l’execució al navegador
-        # cls.selenium.quit()
-        cls.selenium.implicitly_wait(500)
+        cls.selenium.quit()
         super().tearDownClass()
 
     def test_login(self):
@@ -85,6 +84,15 @@ class MySeleniumTests(StaticLiveServerTestCase):
             # comprovem de nou que el títol de la pàgina és el què esperem
             self.assertEqual( self.selenium.title , "Select question to change | Django site admin" )
             
+        """
+        # Para comprobar la comprobación se borra una opción de una pregunta entre media
+        self.selenium.get('%s%s' % (self.live_server_url, '/admin/polls/choice/'))
+        self.selenium.find_element(By.LINK_TEXT,"Fiffy").click()
+        self.selenium.find_element(By.LINK_TEXT, "Delete").click()
+        self.selenium.find_element(By.XPATH, "//input[contains(@value, 'Yes, ')]").click()
+        self.selenium.get('%s%s' % (self.live_server_url, '/admin/polls/question/'))
+        """
+            
         # Comprobación de la inserción correcta
         for question in matrix:
             q_valid =  self.selenium.find_element(By.LINK_TEXT, question)
@@ -94,7 +102,8 @@ class MySeleniumTests(StaticLiveServerTestCase):
 
             # Búsqueda de las opciones
             for option in matrix[question]:
-                if self.selenium.find_element(By.XPATH, f'//input[@value="{option}"]'):
+                c_valid = self.selenium.find_element(By.XPATH, f'//input[@value="{option}"]')
+                if c_valid:
                     print(f"\t✓ Opción {option} insertada correctamente")
 
             # Volver a la lista de las preguntas
